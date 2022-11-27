@@ -1,3 +1,29 @@
 from django.db import models
+from django.contrib.auth.models import User
 
-# Create your models here.
+
+class Post(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+    datetime = models.DateTimeField(auto_now_add=True)
+    thread = models.ForeignKey('forum.Thread', on_delete=models.CASCADE)
+
+
+class Thread(models.Model):
+    title = models.CharField(max_length=50, blank=False, null=False)
+    content = models.TextField()
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='thread_creator')
+    open_date = models.DateTimeField(auto_now_add=True)
+    closed = models.BooleanField(default=False)
+    closing_date = models.DateTimeField(null=True)
+    closed_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='admin_user')
+    section = models.ForeignKey('forum.Section', on_delete=models.CASCADE)
+
+
+class Section(models.Model):
+    name = models.CharField(max_length=50, blank=False, null=False)
+    description = models.CharField(max_length=255, blank=False, null=False)
+
+
+
+
