@@ -62,7 +62,7 @@ class Query:
     version = graphene.String()
 
     def resolve_version(self, info, **kwargs):
-        return '0.0.1'
+        return '0.0.2'
 
     #######################
     #  Multiple objects
