@@ -11,3 +11,9 @@ shell:
 
 run:
 	python manage.py runserver 0.0.0.0:9099 --settings=ogame_forum_api.settings.${ENV_REF}
+
+
+pipe:
+	make install
+	make migrate
+	make run
