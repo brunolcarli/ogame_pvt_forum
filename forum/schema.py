@@ -170,7 +170,30 @@ class CreatePost(graphene.relay.ClientIDMutation):
         return CreatePost(post)
 
 
+class CreateUser(graphene.relay.ClientIDMutation):
+    user = graphene.Field(UserType)
+
+    class Input:
+        username = graphene.String(required=True)
+        email = graphene.String(required=True)
+        password = graphene.String(required=True)
+        bio = graphene.String()
+
+    def mutate_and_get_payload(self, info, **kwargs):
+        user, created = CustomUser.objects.get_or_create(email=kwargs['email'])
+        if not created:
+            raise Exception('ERROR: email already registered!')
+
+        user.username = kwargs['username']
+        user.bio = kwargs.get('bio', '')
+        user.set_password(kwargs['password'])
+        user.save()
+
+        return CreateUser(user)
+
+
 class Mutation:
     create_section = CreateSection.Field()
     create_thread = CreateThread.Field()
     create_post = CreatePost.Field()
+    create_user = CreateUser.Field()
