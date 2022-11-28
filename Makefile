@@ -1,3 +1,6 @@
+install:
+	pip install -r requirements.txt
+
 migrate:
 	python manage.py makemigrations --settings=ogame_forum_api.settings.${ENV_REF}
 	python manage.py migrate --settings=ogame_forum_api.settings.${ENV_REF}
