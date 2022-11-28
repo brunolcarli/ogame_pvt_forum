@@ -54,11 +54,19 @@ class UniverseType(graphene.ObjectType):
     name = graphene.String()
 
 
+########################
+#  QUERY
+########################
+
 class Query:
     version = graphene.String()
 
     def resolve_version(self, info, **kwargs):
         return '0.0.1'
+
+    #######################
+    #  Multiple objects
+    #######################
 
     # Query Sections
     sections = graphene.List(SectionType)
@@ -77,6 +85,38 @@ class Query:
 
     def resolve_posts(self, info, **kwargs):
         return Post.objects.filter(**kwargs)
+
+    #######################
+    #  Single objects
+    #######################
+
+    # Section
+    section = graphene.Field(
+        SectionType,
+        id=graphene.ID(required=True)
+    )
+
+    def resolve_section(self, info, **kwargs):
+        try:
+            section = Section.objects.get(**kwargs)
+        except Section.DoesNotExist:
+            raise Exception('QUERY ERROR: Requested object not found!')
+
+        return section
+
+    # Thread
+    thread = graphene.Field(
+        ThreadType,
+        id=graphene.ID(required=True)
+    )
+
+    def resolve_thread(self, info, **kwargs):
+        try:
+            thread = Thread.objects.get(**kwargs)
+        except Thread.DoesNotExist:
+            raise Exception('QUERY ERROR: Requested object not found!')
+
+        return thread
 
 
 #####################
