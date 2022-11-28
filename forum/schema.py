@@ -57,7 +57,7 @@ class Query:
     version = graphene.String()
 
     def resolve_version(self, info, **kwargs):
-        return '0.0.0'
+        return '0.0.1'
 
     # Query Sections
     sections = graphene.List(SectionType)
