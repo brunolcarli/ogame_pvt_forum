@@ -1,6 +1,7 @@
 from datetime import datetime
 import graphene
 from forum.models import Section, Thread, Post, CustomUser
+from forum.auth import access_required
 
 
 class SectionType(graphene.ObjectType):
@@ -78,13 +79,19 @@ class Query:
         return Post.objects.filter(**kwargs)
 
 
+#####################
+#  MUTATIONS
+#####################
+
 class CreateSection(graphene.relay.ClientIDMutation):
     section = graphene.Field(SectionType)
 
     class Input:
+        user_id = graphene.ID(required=True)
         name = graphene.String(required=True)
         description = graphene.String(required=True)
 
+    @access_required
     def mutate_and_get_payload(self, info, **kwargs):
         section, created = Section.objects.get_or_create(name=kwargs['name'])
 
@@ -107,6 +114,7 @@ class CreateThread(graphene.relay.ClientIDMutation):
         user_id = graphene.ID(required=True)
         section_id = graphene.ID(required=True)
 
+    @access_required
     def mutate_and_get_payload(self, info, **kwargs):
         try:
             section = Section.objects.get(id=kwargs['section_id'])
@@ -137,6 +145,7 @@ class CreatePost(graphene.relay.ClientIDMutation):
         user_id = graphene.ID(required=True)
         thread_id = graphene.ID(required=True)
 
+    @access_required
     def mutate_and_get_payload(self, info, **kwargs):
         try:
             thread = Thread.objects.get(id=kwargs['thread_id'])
