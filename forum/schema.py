@@ -127,7 +127,7 @@ class CreateSection(graphene.relay.ClientIDMutation):
     section = graphene.Field(SectionType)
 
     class Input:
-        user_id = graphene.ID(required=True)
+        username = graphene.ID(required=True)
         name = graphene.String(required=True)
         description = graphene.String(required=True)
 
@@ -151,7 +151,7 @@ class CreateThread(graphene.relay.ClientIDMutation):
     class Input:
         title = graphene.String(required=True)
         content = graphene.String(required=True)
-        user_id = graphene.ID(required=True)
+        username = graphene.ID(required=True)
         section_id = graphene.ID(required=True)
 
     @access_required
@@ -182,7 +182,7 @@ class CreatePost(graphene.relay.ClientIDMutation):
 
     class Input:
         content = graphene.String(required=True)
-        user_id = graphene.ID(required=True)
+        username = graphene.ID(required=True)
         thread_id = graphene.ID(required=True)
 
     @access_required
@@ -218,14 +218,28 @@ class CreateUser(graphene.relay.ClientIDMutation):
         email = graphene.String(required=True)
         password = graphene.String(required=True)
         bio = graphene.String()
+        avatar = graphene.String()
 
     def mutate_and_get_payload(self, info, **kwargs):
+
+        try:
+            username = CustomUser.objects.get(username=kwargs['username'])
+        except CustomUser.DoesNotExist:
+            # Username free to use
+            pass
+        else:
+            raise Exception('ERROR: username already in use!')
+
         user, created = CustomUser.objects.get_or_create(email=kwargs['email'])
         if not created:
             raise Exception('ERROR: email already registered!')
 
         user.username = kwargs['username']
         user.bio = kwargs.get('bio', '')
+        user.avatar = kwargs.get(
+            'avatar',
+            'https://www.baxterip.com.au/wp-content/uploads/2019/02/anonymous.jpg'
+        )
         user.set_password(kwargs['password'])
         user.save()
 

@@ -30,11 +30,18 @@ def access_required(function):
             raise Exception('Session expired')
 
         token_user = payload['username']
-        user_id = kwargs['user_id']
+        username = kwargs['username']
+
+        if token_user != username:
+            raise Exception('AUTH ERROR: Invalid credentials for this user')
+
         try:
-            user = CustomUser.objects.get(username=token_user, id=user_id)
+            user = CustomUser.objects.get(username=token_user)
         except CustomUser.DoesNotExist:
             raise Exception('AUTH ERROR: Invalid credentials for this user')
+
+        # inject user id on kwargs
+        kwargs['user_id'] = user.id
 
         # TODO: check if user is banned or blocked
 
