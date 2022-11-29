@@ -46,6 +46,7 @@ class UserType(graphene.ObjectType):
     threads_open = graphene.List(ThreadType)
     is_superuser = graphene.Boolean()
     bio = graphene.String()
+    avatar = graphene.String()
 
 
 class UniverseType(graphene.ObjectType):
