@@ -3,8 +3,8 @@ from django.contrib.auth.models import User
 
 
 class CustomUser(User):
-    avatar = models.BinaryField(null=True)
-    bio = models.TextField()
+    avatar = models.TextField(null=True)
+    bio = models.TextField(null=True)
 
 
 class Post(models.Model):
