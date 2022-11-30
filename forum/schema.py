@@ -241,8 +241,11 @@ class CreateUser(graphene.relay.ClientIDMutation):
             'avatar',
             'https://www.baxterip.com.au/wp-content/uploads/2019/02/anonymous.jpg'
         )
-        user.set_password(kwargs['password'])
-        user.save()
+        try:
+            user.set_password(kwargs['password'])
+            user.save()
+        except:
+            pass
 
         return CreateUser(user)
 
