@@ -69,6 +69,12 @@ class Query:
     #  Multiple objects
     #######################
 
+    # Query users
+    users = graphene.List(UserType)
+
+    def resolve_users(self, info, **kwargs):
+        return CustomUser.objects.filter(**kwargs)
+
     # Query Sections
     sections = graphene.List(SectionType)
 
@@ -90,6 +96,19 @@ class Query:
     #######################
     #  Single objects
     #######################
+
+    # Users
+    user = graphene.Field(
+        UserType,
+        id=graphene.ID(required=True)
+    )
+
+    def resolve_user(self, info, **kwargs):
+        try:
+            user = CustomUser.objects.get(**kwargs)
+        except CustomUser.DoesNotExist:
+            raise Exception('QUERY ERROR: Requested object not found!')
+        return user
 
     # Section
     section = graphene.Field(
