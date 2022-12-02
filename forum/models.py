@@ -15,7 +15,7 @@ class Post(models.Model):
 
 
 class Thread(models.Model):
-    title = models.CharField(max_length=50, blank=False, null=False)
+    title = models.CharField(max_length=255, blank=False, null=False)
     content = models.TextField()
     created_by = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='thread_creator')
     open_date = models.DateTimeField(auto_now_add=True)
