@@ -170,6 +170,10 @@ class CreateSection(graphene.relay.ClientIDMutation):
 
     @access_required
     def mutate_and_get_payload(self, info, **kwargs):
+        user = CustomUser.objects.get(id=kwargs['user_id'])
+        if not user.is_superuser:
+            raise Exception('ERROR: Unauthorized')
+
         section, created = Section.objects.get_or_create(name=kwargs['name'])
 
         if not created:
@@ -179,7 +183,6 @@ class CreateSection(graphene.relay.ClientIDMutation):
         section.save()
 
         return CreateSection(section)
-
 
 
 class CreateThread(graphene.relay.ClientIDMutation):
@@ -210,6 +213,8 @@ class CreateThread(graphene.relay.ClientIDMutation):
             created_by=user
         )
         thread.save()
+        user.last_activity = datetime.utcnow()
+        user.save()
 
         return CreateThread(thread)
 
@@ -243,6 +248,8 @@ class CreatePost(graphene.relay.ClientIDMutation):
         post.save()
         thread.last_post_datetime = datetime.utcnow()
         thread.save()
+        user.last_activity = datetime.utcnow()
+        user.save()
 
         return CreatePost(post)
 
@@ -260,7 +267,7 @@ class CreateUser(graphene.relay.ClientIDMutation):
     def mutate_and_get_payload(self, info, **kwargs):
 
         try:
-            username = CustomUser.objects.get(username=kwargs['username'])
+            user = CustomUser.objects.get(username=kwargs['username'])
         except CustomUser.DoesNotExist:
             # Username free to use
             pass
@@ -277,6 +284,7 @@ class CreateUser(graphene.relay.ClientIDMutation):
             'avatar',
             'https://www.baxterip.com.au/wp-content/uploads/2019/02/anonymous.jpg'
         )
+        user.last_activity = datetime.utcnow()
         try:
             user.set_password(kwargs['password'])
             user.save()
