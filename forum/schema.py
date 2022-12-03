@@ -49,14 +49,14 @@ class UserType(graphene.ObjectType):
     avatar = graphene.String()
     date_joined = graphene.DateTime()
     posts_count = graphene.Int()
-    threads_opened = graphene.Int()
+    threads_count = graphene.Int()
     last_activity = graphene.DateTime()
     is_banned = graphene.Boolean()
 
     def resolve_posts_count(self, info, **kwargs):
         return self.posted_by.count()
 
-    def resolve_threads_opened(self, info, **kwargs):
+    def resolve_threads_count(self, info, **kwargs):
         return self.threads_open.count()
 
 
