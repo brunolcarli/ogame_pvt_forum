@@ -47,6 +47,15 @@ class UserType(graphene.ObjectType):
     is_superuser = graphene.Boolean()
     bio = graphene.String()
     avatar = graphene.String()
+    date_joined = graphene.DateTime()
+    posts_count = graphene.Int()
+    threads_opened = graphene.Int()
+
+    def resolve_posts_count(self, info, **kwargs):
+        return self.posted_by.count()
+
+    def resolve_threads_opened(self, info, **kwargs):
+        return self.threads_open.count()
 
 
 class UniverseType(graphene.ObjectType):
