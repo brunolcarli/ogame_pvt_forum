@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 class CustomUser(User):
     avatar = models.TextField(null=True)
     bio = models.TextField(null=True)
+    last_activity = models.DateTimeField(null=True)
+    is_banned = models.BooleanField(default=False)
 
 
 class Post(models.Model):

@@ -50,6 +50,8 @@ class UserType(graphene.ObjectType):
     date_joined = graphene.DateTime()
     posts_count = graphene.Int()
     threads_opened = graphene.Int()
+    last_activity = graphene.DateTime()
+    is_banned = graphene.Boolean()
 
     def resolve_posts_count(self, info, **kwargs):
         return self.posted_by.count()
