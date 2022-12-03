@@ -40,10 +40,11 @@ def access_required(function):
         except CustomUser.DoesNotExist:
             raise Exception('AUTH ERROR: Invalid credentials for this user')
 
+        if user.is_banned:
+            raise Exception('AUTH ERROR: banned users cannot perform actions')
+
         # inject user id on kwargs
         kwargs['user_id'] = user.id
-
-        # TODO: check if user is banned or blocked
 
         return function(*args, **kwargs)
     return decorated
