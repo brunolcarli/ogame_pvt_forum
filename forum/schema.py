@@ -53,11 +53,17 @@ class UserType(graphene.ObjectType):
     last_activity = graphene.DateTime()
     is_banned = graphene.Boolean()
 
+    def resolve_posts(self, info, **kwargs):
+        return self.posted_by.all()
+
+    def resolve_threads_open(self, info, **kwargs):
+        return self.thread_creator.all()
+
     def resolve_posts_count(self, info, **kwargs):
         return self.posted_by.count()
 
     def resolve_threads_count(self, info, **kwargs):
-        return self.threads_open.count()
+        return self.thread_creator.count()
 
 
 class UniverseType(graphene.ObjectType):
